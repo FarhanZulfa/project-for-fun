@@ -106,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnView2D = document.getElementById('btnView2D');
   const viewport3D = document.getElementById('viewport3D');
   const container2D = document.getElementById('container2D');
-  const layoutSelector2D = document.getElementById('layoutSelector2D');
 
   if (btnView3D && btnView2D) {
     btnView3D.addEventListener('click', () => {
@@ -114,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
       btnView2D.classList.remove('active');
       if (viewport3D) viewport3D.style.display = 'flex';
       if (container2D) container2D.style.display = 'none';
-      if (layoutSelector2D) layoutSelector2D.style.display = 'none';
       keyboard3d.handleResize();
       showToast('Switched to Real 3D Studio Model');
     });
@@ -124,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
       btnView3D.classList.remove('active');
       if (viewport3D) viewport3D.style.display = 'none';
       if (container2D) container2D.style.display = 'inline-block';
-      if (layoutSelector2D) layoutSelector2D.style.display = 'flex';
       showToast('Switched to 2D Matrix View');
     });
   }
@@ -138,17 +135,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2D Keyboard Layout Selector
+  // Keyboard Layout Selector (Syncs both 3D & 2D)
   const layoutBtns = document.querySelectorAll('.layout-opt-btn');
   layoutBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       layoutBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const layout = btn.dataset.layout;
+      keyboard3d.setLayout(layout);
       keyboard2d.setLayout(layout);
-      showToast(`Switched layout to ${btn.textContent}`);
+      showToast(`Keyboard Layout: ${btn.textContent}`);
     });
   });
+
+  // Initialize metrics display on startup
+  keyboard2d.notifyMetrics();
 
   // Heatmap & Reset Buttons
   const btnToggleHeatmap = document.getElementById('btnToggleHeatmap');

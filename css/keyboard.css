@@ -172,6 +172,12 @@
   display: flex;
   gap: 5px;
   align-items: center;
+  flex-wrap: nowrap;
+}
+
+.kb-spacer {
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 /* 3D Keycap Physics & Aesthetics */
@@ -179,6 +185,7 @@
   position: relative;
   height: 48px;
   min-width: 48px;
+  flex-shrink: 0;
   background: var(--keycap-alpha-bg);
   color: var(--keycap-alpha-text);
   border-radius: 6px;

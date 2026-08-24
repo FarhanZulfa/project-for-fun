@@ -41,7 +41,7 @@ class SwitchSynthesizer {
 
     const now = this.ctx.currentTime;
     const isSpace = keyCode === 'Space' || keyCode === 32;
-    const isEnter = keyCode === 'Enter' || keyCode === 13;
+    const isEnter = keyCode === 'Enter' || keyCode === 'NumpadEnter' || keyCode === 13;
     const isBackspace = keyCode === 'Backspace' || keyCode === 8;
     const isMod = isSpace || isEnter || isBackspace;
 
