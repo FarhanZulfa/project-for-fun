@@ -1,0 +1,1025 @@
+/* ==========================================================================
+   HabitHeatmap - Quality Japanese Stationery & Scandinavian Cafe Aesthetic
+   Anti-AI-Slop Design System: Warm, Tactile, Calming, Organic
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+:root {
+  /* Warm Linen & Stationery Palette */
+  --bg-app: #F7F5F0;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #FAF8F5;
+  --bg-subtle: #ECE7DE;
+  --bg-subtle-hover: #E2DBD0;
+
+  /* Typography Colors */
+  --text-main: #2D251E;
+  --text-muted: #73675C;
+  --text-dim: #9C8F82;
+  --text-inverse: #FAF8F5;
+
+  /* Borders & Dividers */
+  --border-light: #ECE7DE;
+  --border-strong: #D9D2C5;
+  --border-focus: #4F443B;
+
+  /* GitHub Organic Forest Green Heatmap Tiering */
+  --heat-level-0: #EBE7DE;
+  --heat-level-1: #B5D8A4;
+  --heat-level-2: #72B868;
+  --heat-level-3: #3B8C3A;
+  --heat-level-4: #1E5C22;
+
+  /* Warm Accent Colors (Stationery Inks) */
+  --accent-amber: #C97A3E;
+  --accent-amber-soft: rgba(201, 122, 62, 0.12);
+  --accent-terracotta: #B8533E;
+  --accent-matcha: #4F7C53;
+  --accent-matcha-soft: rgba(79, 124, 83, 0.12);
+  --accent-indigo: #4A5B78;
+  --accent-plum: #7A4B6E;
+
+  /* Shadows (Soft organic diffuse) */
+  --shadow-xs: 0 1px 2px rgba(45, 37, 30, 0.04);
+  --shadow-sm: 0 2px 5px rgba(45, 37, 30, 0.05), 0 1px 2px rgba(45, 37, 30, 0.03);
+  --shadow-md: 0 6px 16px -3px rgba(45, 37, 30, 0.07), 0 2px 4px rgba(45, 37, 30, 0.03);
+  --shadow-lg: 0 16px 32px -6px rgba(45, 37, 30, 0.10), 0 4px 8px rgba(45, 37, 30, 0.04);
+  --shadow-inner: inset 0 1px 2px rgba(45, 37, 30, 0.06);
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-pill: 9999px;
+
+  /* Typography Tokens */
+  --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Transitions */
+  --trans-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --trans-smooth: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  --trans-bounce: 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Midnight Lofi Study Theme (Comfortable Warm Dark) */
+[data-theme="dark"] {
+  --bg-app: #181614;
+  --bg-surface: #221F1C;
+  --bg-surface-elevated: #2A2622;
+  --bg-subtle: #332E29;
+  --bg-subtle-hover: #3E3832;
+
+  --text-main: #EDE6DC;
+  --text-muted: #A3998E;
+  --text-dim: #756D63;
+  --text-inverse: #181614;
+
+  --border-light: #302A24;
+  --border-strong: #423B33;
+  --border-focus: #A3998E;
+
+  --heat-level-0: #292521;
+  --heat-level-1: #2E5928;
+  --heat-level-2: #43873B;
+  --heat-level-3: #62B855;
+  --heat-level-4: #8DE07F;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 16px -3px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 32px -6px rgba(0, 0, 0, 0.55);
+}
+
+/* ==========================================================================
+   Base & Resets
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--trans-smooth), color var(--trans-smooth);
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+/* ==========================================================================
+   App Layout
+   ========================================================================== */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Header */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-symbol {
+  width: 40px;
+  height: 40px;
+  background-color: var(--text-main);
+  color: var(--bg-app);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--trans-bounce);
+}
+
+.brand-symbol:hover {
+  transform: rotate(6deg) scale(1.05);
+}
+
+.brand-info h1 {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.brand-info p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-light);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  box-shadow: var(--shadow-xs);
+  transition: all var(--trans-fast);
+  user-select: none;
+}
+
+.btn:hover {
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-xs);
+}
+
+.btn-primary {
+  background: var(--text-main);
+  color: var(--bg-surface);
+  border-color: var(--text-main);
+}
+
+.btn-primary:hover {
+  background: var(--text-muted);
+  border-color: var(--text-muted);
+  color: #FFFFFF;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.btn-sm {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.65rem;
+}
+
+/* ==========================================================================
+   Stats Overview Bar (Metrics Grid)
+   ========================================================================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.25rem;
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: transform var(--trans-fast), box-shadow var(--trans-fast);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stat-header svg {
+  color: var(--text-dim);
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.stat-unit {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.stat-subtext {
+  font-size: 0.76rem;
+  color: var(--text-dim);
+}
+
+/* ==========================================================================
+   Today's Check-in Workspace
+   ========================================================================== */
+.section-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem 1.75rem;
+  box-shadow: var(--shadow-xs);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.panel-title-group h2 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.panel-title-group p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.date-navigator {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-pill);
+  padding: 0.25rem 0.5rem;
+}
+
+.date-display-btn {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+  padding: 0.2rem 0.5rem;
+}
+
+/* Habits Checklist */
+.habits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 0.85rem;
+}
+
+.habit-card {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--trans-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.habit-card:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-surface);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.habit-card.completed {
+  background: var(--accent-matcha-soft);
+  border-color: rgba(79, 124, 83, 0.3);
+}
+
+.habit-card-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.habit-color-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.habit-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.habit-name {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--trans-fast);
+}
+
+.habit-streak-pill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.15rem;
+}
+
+.check-trigger {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  background: var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  flex-shrink: 0;
+  transition: all var(--trans-bounce);
+}
+
+.habit-card:hover .check-trigger {
+  border-color: var(--accent-matcha);
+}
+
+.habit-card.completed .check-trigger {
+  background: var(--accent-matcha);
+  border-color: var(--accent-matcha);
+  color: #FFFFFF;
+  transform: scale(1.08);
+}
+
+.empty-habits-notice {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--text-muted);
+}
+
+/* Daily Reflection Note Input Bar */
+.daily-note-bar {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.note-icon-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-amber-soft);
+  color: var(--accent-amber);
+  border: 1px solid rgba(201, 122, 62, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--trans-fast);
+}
+
+.daily-note-bar:focus-within .note-icon-badge {
+  border-color: var(--accent-amber);
+  background: rgba(201, 122, 62, 0.2);
+  transform: scale(1.04);
+}
+
+.daily-note-input {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  padding: 0.5rem 0.85rem;
+  background: var(--bg-surface-elevated);
+  color: var(--text-main);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  transition: all var(--trans-fast);
+}
+
+.daily-note-input:focus {
+  outline: none;
+  background: var(--bg-surface);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px rgba(79, 68, 59, 0.12);
+}
+
+.daily-note-input::placeholder {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.note-saved-status {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent-matcha);
+  min-width: 60px;
+  text-align: right;
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+.note-saved-status.visible {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Heatmap Visualization Section
+   ========================================================================== */
+.heatmap-container {
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.heatmap-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.heatmap-container::-webkit-scrollbar-thumb {
+  background-color: var(--border-strong);
+  border-radius: 3px;
+}
+
+.heatmap-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding: 0.2rem 0;
+}
+
+.filter-pill {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-pill);
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  transition: all var(--trans-fast);
+  white-space: nowrap;
+}
+
+.filter-pill:hover {
+  color: var(--text-main);
+  background: var(--bg-subtle-hover);
+}
+
+.filter-pill.active {
+  background: var(--text-main);
+  color: var(--bg-surface);
+}
+
+/* SVG Heatmap Layout */
+.heatmap-svg {
+  display: block;
+  user-select: none;
+}
+
+.heatmap-month-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  fill: var(--text-muted);
+  font-weight: 500;
+}
+
+.heatmap-day-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  fill: var(--text-dim);
+  font-weight: 500;
+}
+
+.heatmap-cell {
+  cursor: pointer;
+  rx: 2.5px;
+  ry: 2.5px;
+  transition: stroke var(--trans-fast), transform var(--trans-fast), fill var(--trans-fast);
+  outline: none;
+}
+
+.heatmap-cell:hover {
+  stroke: var(--text-main);
+  stroke-width: 1.5px;
+}
+
+.heatmap-cell.today-cell {
+  stroke: var(--accent-amber);
+  stroke-width: 1.5px;
+}
+
+/* Heatmap Legend */
+.heatmap-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.legend-group {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.legend-cells {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.legend-swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   Tooltips (Tactile Glassmorphism)
+   ========================================================================== */
+.heatmap-tooltip {
+  position: absolute;
+  z-index: 1000;
+  pointer-events: none;
+  background: rgba(34, 31, 28, 0.94);
+  color: #FFFFFF;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.9rem;
+  font-size: 0.78rem;
+  box-shadow: var(--shadow-lg);
+  max-width: 260px;
+  transform: translate(-50%, -100%);
+  margin-top: -10px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--trans-fast), transform var(--trans-fast);
+}
+
+.heatmap-tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tooltip-date {
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  color: #EDE6DC;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.25rem;
+}
+
+.tooltip-count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #A3D99B;
+  margin-bottom: 0.35rem;
+}
+
+.tooltip-habits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.tooltip-habit-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+}
+
+.tooltip-habit-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.tooltip-habit-item.done {
+  color: #EDE6DC;
+}
+
+.tooltip-habit-item.missed {
+  color: #8C847B;
+  text-decoration: line-through;
+}
+
+/* ==========================================================================
+   Modals (Tactile Organic Dialogs)
+   ========================================================================== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 25, 20, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all var(--trans-smooth);
+}
+
+.modal-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.modal-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(16px) scale(0.97);
+  transition: all var(--trans-bounce);
+}
+
+.modal-backdrop.active .modal-card {
+  transform: translateY(0) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.modal-header h3 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.15rem;
+}
+
+.form-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  background: var(--bg-surface-elevated);
+  font-size: 0.88rem;
+  color: var(--text-main);
+  outline: none;
+  transition: all var(--trans-fast);
+}
+
+.form-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-amber-soft);
+  background: var(--bg-surface);
+}
+
+.color-swatches-row {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
+}
+
+.color-swatch-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: transform var(--trans-fast), border-color var(--trans-fast);
+}
+
+.color-swatch-btn:hover {
+  transform: scale(1.15);
+}
+
+.color-swatch-btn.selected {
+  border-color: var(--text-main);
+  transform: scale(1.15);
+}
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+/* ==========================================================================
+   Manage Habits List inside Modal
+   ========================================================================== */
+.manage-habits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: 260px;
+  overflow-y: auto;
+  margin-bottom: 1.25rem;
+}
+
+.manage-habit-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-light);
+}
+
+.manage-habit-info {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* ==========================================================================
+   Tactile High-Craft Toast Notifications (Anti-AI Slop Compliant)
+   ========================================================================== */
+.toast-container {
+  position: fixed;
+  bottom: 1.75rem;
+  right: 1.75rem;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  pointer-events: none;
+  max-width: 380px;
+}
+
+.toast {
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem 0.85rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.25), 0 4px 12px -2px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
+  pointer-events: auto;
+  transform: translateY(20px) scale(0.96);
+  opacity: 0;
+  transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 200ms ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.toast.show {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.toast-icon-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.toast-success .toast-icon-badge {
+  background: var(--accent-matcha-soft);
+  color: var(--accent-matcha);
+  border: 1px solid rgba(79, 124, 83, 0.25);
+}
+
+.toast-celebrate .toast-icon-badge {
+  background: rgba(201, 122, 62, 0.15);
+  color: var(--accent-amber);
+  border: 1px solid rgba(201, 122, 62, 0.3);
+}
+
+.toast-info .toast-icon-badge {
+  background: rgba(74, 91, 120, 0.15);
+  color: var(--accent-indigo);
+  border: 1px solid rgba(74, 91, 120, 0.25);
+}
+
+.toast-body {
+  flex: 1;
+  line-height: 1.35;
+  color: var(--text-main);
+  font-family: var(--font-body);
+}
+
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2.5px;
+  width: 100%;
+  background: var(--accent-matcha);
+  transform-origin: left;
+  animation: toastDismissProgress 2600ms linear forwards;
+}
+
+.toast-celebrate .toast-progress {
+  background: linear-gradient(90deg, var(--accent-amber), var(--accent-matcha));
+}
+
+@keyframes toastDismissProgress {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .app-container {
+    padding: 1.25rem 1rem 3rem;
+    gap: 1.5rem;
+  }
+
+  .brand-info h1 {
+    font-size: 1.15rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .habits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-panel {
+    padding: 1.25rem 1rem;
+  }
+
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .date-navigator {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

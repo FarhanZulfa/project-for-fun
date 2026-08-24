@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build Outputs & Android Cache
+.gradle/
+build/
+app/build/
+*.iml
+.idea/
+local.properties
+.DS_Store
+Thumbs.db
+www/
+
+# Logs
+*.log

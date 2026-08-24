@@ -1,0 +1,17 @@
+{
+  "name": "project2",
+  "version": "1.0.0",
+  "description": "> Minimalist, tactile, and aesthetic life habit tracker featuring **GitHub-style 52-week contribution heatmaps**, streak analytics, and 100% client-side offline privacy.",
+  "main": "sw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0"
+  }
+}

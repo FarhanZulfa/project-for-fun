@@ -1,0 +1,20 @@
+{
+  "name": "HabitHeatmap — Life Tracker",
+  "short_name": "HabitHeatmap",
+  "description": "Minimalist, tactile life habit tracker with 52-week contribution heatmaps and streak analytics.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F7F5F0",
+  "theme_color": "#4F7C53",
+  "categories": ["productivity", "lifestyle", "health"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='115' fill='%234F7C53'/><g fill='%23FFFFFF'><rect x='90' y='90' width='140' height='140' rx='28'/><rect x='282' y='90' width='140' height='140' rx='28'/><rect x='90' y='282' width='140' height='140' rx='28'/><rect x='282' y='282' width='140' height='140' rx='28'/></g></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

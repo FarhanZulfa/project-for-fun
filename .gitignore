@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Android Build artifacts
+Project2/node_modules/
+Project2/android/.gradle/
+Project2/android/build/
+Project2/android/app/build/
+Project2/android/.idea/
+Project2/android/*.iml
+Project2/android/local.properties
+Project2/www/
+
+# Logs & temp
+*.log
+.DS_Store
+Thumbs.db

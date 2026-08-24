@@ -1,0 +1,8 @@
+{
+  "appId": "com.habitheatmap.app",
+  "appName": "HabitHeatmap",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
