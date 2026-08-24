@@ -83,7 +83,7 @@
     <section class="stats-grid" id="statsGrid"></section>
 
     <!-- Check-in Workspace Panel -->
-    <section class="section-panel">
+    <section class="section-panel" id="sectionCheckin">
       <div class="panel-header">
         <div class="panel-title-group">
           <h2>Daily Check-in</h2>
@@ -130,7 +130,7 @@
     </section>
 
     <!-- Contribution Heatmap Visualization -->
-    <section class="section-panel">
+    <section class="section-panel" id="sectionHeatmap">
       <div class="heatmap-filter-bar">
         <div class="panel-title-group">
           <h2>Yearly Consistency Matrix</h2>
@@ -284,6 +284,107 @@
       </div>
     </div>
   </div>
+
+  <!-- ======================================================================= -->
+  <!-- MODAL 4: Mobile Settings & Feature Sheet -->
+  <!-- ======================================================================= -->
+  <div class="modal-backdrop" id="modalMobileMenu">
+    <div class="modal-card mobile-sheet">
+      <div class="modal-header">
+        <h3>App Actions & Settings</h3>
+        <button class="btn btn-icon btn-sm" data-close-modal title="Close">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="mobile-menu-grid">
+        <button class="mobile-menu-btn" id="btnMobileManage">
+          <div class="mobile-menu-icon" style="background: rgba(79, 124, 83, 0.15); color: var(--accent-matcha);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </div>
+          <div class="mobile-menu-info">
+            <span class="mobile-menu-title">Manage Habits</span>
+            <span class="mobile-menu-sub">Edit or delete active habits</span>
+          </div>
+        </button>
+
+        <button class="mobile-menu-btn" id="btnMobileExport">
+          <div class="mobile-menu-icon" style="background: rgba(201, 122, 62, 0.15); color: var(--accent-amber);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          </div>
+          <div class="mobile-menu-info">
+            <span class="mobile-menu-title">Export Share Card</span>
+            <span class="mobile-menu-sub">Save high-res PNG image</span>
+          </div>
+        </button>
+
+        <button class="mobile-menu-btn" id="btnMobileBackupTrigger">
+          <div class="mobile-menu-icon" style="background: rgba(74, 91, 120, 0.15); color: var(--accent-indigo);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          </div>
+          <div class="mobile-menu-info">
+            <span class="mobile-menu-title">Backup & Restore</span>
+            <span class="mobile-menu-sub">Export or import JSON data</span>
+          </div>
+        </button>
+
+        <a href="HabitHeatmap.apk" download="HabitHeatmap.apk" class="mobile-menu-btn" style="text-decoration: none;">
+          <div class="mobile-menu-icon" style="background: rgba(184, 83, 62, 0.15); color: var(--accent-terracotta);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+          </div>
+          <div class="mobile-menu-info">
+            <span class="mobile-menu-title">Download Android APK</span>
+            <span class="mobile-menu-sub">Install offline native package</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="modal-actions" style="margin-top:1.25rem;">
+        <button type="button" class="btn btn-primary" data-close-modal style="width:100%; justify-content:center;">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Tab Bar -->
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-nav-item active" data-nav-target="sectionCheckin">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 11l3 3L22 4"></path>
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+      </svg>
+      <span>Today</span>
+    </button>
+
+    <button class="mobile-nav-item" data-nav-target="sectionHeatmap">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+        <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+      </svg>
+      <span>Heatmap</span>
+    </button>
+
+    <button class="mobile-nav-item" data-nav-target="statsGrid">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 20V10"></path>
+        <path d="M12 20V4"></path>
+        <path d="M6 20v-6"></path>
+      </svg>
+      <span>Streaks</span>
+    </button>
+
+    <button class="mobile-nav-item" id="btnOpenMobileMenu">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="1"></circle>
+        <circle cx="19" cy="12" r="1"></circle>
+        <circle cx="5" cy="12" r="1"></circle>
+      </svg>
+      <span>More</span>
+    </button>
+  </nav>
 
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toastContainer"></div>

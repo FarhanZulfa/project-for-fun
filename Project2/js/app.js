@@ -477,6 +477,58 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  const modalMobileMenu = document.getElementById('modalMobileMenu');
+  const btnOpenMobileMenu = document.getElementById('btnOpenMobileMenu');
+  const btnMobileManage = document.getElementById('btnMobileManage');
+  const btnMobileExport = document.getElementById('btnMobileExport');
+  const btnMobileBackupTrigger = document.getElementById('btnMobileBackupTrigger');
+
+  if (btnOpenMobileMenu) {
+    btnOpenMobileMenu.addEventListener('click', () => {
+      openModal(modalMobileMenu);
+    });
+  }
+
+  if (btnMobileManage) {
+    btnMobileManage.addEventListener('click', () => {
+      closeModal(modalMobileMenu);
+      renderManageHabitsList();
+      openModal(modalManage);
+    });
+  }
+
+  if (btnMobileExport) {
+    btnMobileExport.addEventListener('click', () => {
+      closeModal(modalMobileMenu);
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (window.HeatmapCardExporter) {
+        window.HeatmapCardExporter.exportCard(store, statsEngine, isDark);
+        showToast('Heatmap Share Card downloaded!', 'camera');
+      }
+    });
+  }
+
+  if (btnMobileBackupTrigger) {
+    btnMobileBackupTrigger.addEventListener('click', () => {
+      closeModal(modalMobileMenu);
+      openModal(modalBackup);
+    });
+  }
+
+  // Mobile Bottom Tab Bar Section Smooth Scrolling
+  document.querySelectorAll('.mobile-nav-item[data-nav-target]').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.mobile-nav-item').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetId = tab.dataset.navTarget;
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
   if (btnNewHabit) {
     btnNewHabit.addEventListener('click', () => {
       document.getElementById('inputHabitName').value = '';
@@ -717,6 +769,14 @@ document.addEventListener('DOMContentLoaded', () => {
   renderDailyNote();
   renderFilterPills();
   heatmap.render();
+
+  // On mobile screens, auto-scroll heatmap to the latest weeks (right edge)
+  setTimeout(() => {
+    const hmContainer = document.getElementById('heatmapContainer');
+    if (hmContainer && window.innerWidth <= 768) {
+      hmContainer.scrollLeft = hmContainer.scrollWidth;
+    }
+  }, 100);
 
   // =========================================================================
   // Service Worker Registration for Mobile PWA Offline Support
