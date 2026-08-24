@@ -3,233 +3,263 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HabitHeatmap — GitHub-Style Life Habit Tracker</title>
-  <meta name="description" content="Minimalist, warm, and tactile life habit tracker featuring GitHub-style 52-week contribution heatmaps, streak analytics, and 100% offline privacy.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234F7C53'><rect x='2' y='2' width='9' height='9' rx='2'/><rect x='13' y='2' width='9' height='9' rx='2'/><rect x='2' y='13' width='9' height='9' rx='2'/><rect x='13' y='13' width='9' height='9' rx='2'/></svg>">
+  <title>KeyLab — Mechanical Keyboard Tester & Switch Sound Synthesizer</title>
+  <meta name="description" content="Interactive mechanical keyboard tester, 100% synthetic switch sound simulator (thock/clack), NKRO anti-ghosting matrix, and WPM speed challenge.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23C25B3E'><rect x='2' y='4' width='20' height='16' rx='3'/><circle cx='6' cy='9' r='1.5' fill='%23FFF'/><circle cx='10' cy='9' r='1.5' fill='%23FFF'/><circle cx='14' cy='9' r='1.5' fill='%23FFF'/><circle cx='18' cy='9' r='1.5' fill='%23FFF'/><circle cx='6' cy='14' r='1.5' fill='%23FFF'/><circle cx='18' cy='14' r='1.5' fill='%23FFF'/><rect x='9' y='13' width='6' height='2' rx='1' fill='%23FFF'/></svg>">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/keyboard.css">
+  <link rel="stylesheet" href="css/typing.css">
 </head>
 <body>
   <div class="app-container">
     <!-- Header -->
     <header class="app-header">
       <div class="brand-wrapper">
-        <div class="brand-symbol">
+        <div class="brand-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x='3' y='3' width='7' height='7' rx='1.5'></rect>
-            <rect x='14' y='3' width='7' height='7' rx='1.5'></rect>
-            <rect x='3' y='14' width='7' height='7' rx='1.5'></rect>
-            <rect x='14' y='14' width='7' height='7' rx='1.5'></rect>
+            <rect x="2" y="4" width="20" height="16" rx="3"></rect>
+            <circle cx="6" cy="9" r="1"></circle>
+            <circle cx="10" cy="9" r="1"></circle>
+            <circle cx="14" cy="9" r="1"></circle>
+            <circle cx="18" cy="9" r="1"></circle>
+            <circle cx="6" cy="14" r="1"></circle>
+            <circle cx="18" cy="14" r="1"></circle>
+            <line x1="9" y1="14" x2="15" y2="14"></line>
           </svg>
         </div>
-        <div class="brand-info">
-          <h1>HabitHeatmap</h1>
-          <p>Personal daily consistency & contribution tracker</p>
+        <div class="brand-text">
+          <h1>KeyLab</h1>
+          <p>Mechanical Keyboard Tester & Sound Synthesizer</p>
         </div>
       </div>
 
-      <div class="header-controls">
-        <button class="btn btn-primary" id="btnNewHabit">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          <span>New Habit</span>
+      <!-- Navigation Mode Tabs -->
+      <nav class="mode-nav" aria-label="Studio Modes">
+        <button class="mode-tab-btn active" data-mode="tester">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="9" x2="6.01" y2="9"></line><line x1="10" y1="9" x2="10.01" y2="9"></line><line x1="14" y1="9" x2="14.01" y2="9"></line><line x1="18" y1="9" x2="18.01" y2="9"></line></svg>
+          <span>Keyboard Tester</span>
         </button>
 
-        <button class="btn" id="btnManageHabits" title="Manage Habits">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-          </svg>
-          <span>Manage</span>
+        <button class="mode-tab-btn" data-mode="typing">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          <span>WPM Challenge</span>
         </button>
 
-        <button class="btn btn-icon" id="btnBackupRestore" title="Backup & Restore">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
+        <button class="mode-tab-btn" data-mode="soundboard">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <span>Typewriter Canvas</span>
+        </button>
+      </nav>
+
+      <!-- Action Controls -->
+      <div class="header-actions">
+        <button class="btn btn-icon" id="btnToggleMute" title="Toggle Sound Synth">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
         </button>
 
-        <button class="btn btn-icon" id="btnToggleSound" title="Toggle Sound">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-          </svg>
-        </button>
-
-        <button class="btn btn-icon" id="btnToggleTheme" title="Toggle Theme">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
+        <button class="btn btn-icon" id="btnToggleTheme" title="Toggle Studio Theme">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
       </div>
     </header>
 
-    <!-- Overview Metrics Grid -->
-    <section class="stats-grid" id="statsGrid"></section>
+    <!-- Switch Sound Profile Selector Bar -->
+    <section class="switch-picker-bar">
+      <div class="switch-picker-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        <span>Acoustic Switch Profile</span>
+      </div>
 
-    <!-- Check-in Workspace Panel -->
-    <section class="section-panel">
-      <div class="panel-header">
-        <div class="panel-title-group">
-          <h2>Daily Check-in</h2>
-          <p>Tap a habit card to mark it as completed for the selected date.</p>
+      <div class="switch-options">
+        <div class="switch-card active" data-switch="holy_panda" title="Deep Marbled Thock (Tactile)">
+          <span class="switch-stem-dot" style="background: #D9822B;"></span>
+          <span>Holy Panda (Deep Thock)</span>
         </div>
 
-        <!-- Date Navigation Bar -->
-        <div class="date-navigator">
-          <button class="btn btn-sm btn-icon" id="btnPrevDay" title="Previous Day">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          </button>
-          <span class="date-display-btn" id="dateDisplayBtn">Today</span>
-          <button class="btn btn-sm btn-icon" id="btnNextDay" title="Next Day">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-          </button>
-          <button class="btn btn-sm" id="btnToday" style="padding: 0.2rem 0.55rem; font-size: 0.72rem;">Today</button>
+        <div class="switch-card" data-switch="oil_king" title="Creamy Muffled Clack (Linear)">
+          <span class="switch-stem-dot" style="background: #2C2C2C; border: 1px solid #666;"></span>
+          <span>Oil King (Creamy Linear)</span>
+        </div>
+
+        <div class="switch-card" data-switch="box_jade" title="Crisp Clickbar Snap (Clicky)">
+          <span class="switch-stem-dot" style="background: #00B4D8;"></span>
+          <span>Box Jade (Crisp Clicky)</span>
+        </div>
+
+        <div class="switch-card" data-switch="silent_alpaca" title="Muted Dampened Silent">
+          <span class="switch-stem-dot" style="background: #FFB5A7;"></span>
+          <span>Silent Alpaca (Muted)</span>
         </div>
       </div>
 
-      <!-- Habits Checklist Grid -->
-      <div class="habits-grid" id="habitsChecklistGrid"></div>
+      <div class="volume-control">
+        <span>Volume</span>
+        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="0.8">
+      </div>
     </section>
 
-    <!-- Contribution Heatmap Visualization -->
-    <section class="section-panel">
-      <div class="heatmap-filter-bar">
-        <div class="panel-title-group">
-          <h2>Yearly Consistency Matrix</h2>
-          <p>52-week activity distribution. Click any square to navigate to that day.</p>
+    <!-- Live Testing Metrics Strip -->
+    <section class="metrics-strip">
+      <div class="metric-box">
+        <div class="metric-label">
+          <span>Active Pressed Keys</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
         </div>
-
-        <div class="filter-pills" id="heatmapFilterPills"></div>
+        <div class="metric-number" id="metricActiveKeys">0</div>
+        <div class="metric-sub">Keys currently down</div>
       </div>
 
-      <div class="heatmap-container" id="heatmapContainer"></div>
+      <div class="metric-box">
+        <div class="metric-label">
+          <span>NKRO Max Simultaneous</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </div>
+        <div class="metric-number" id="metricMaxNkro">0 keys</div>
+        <div class="metric-sub">Anti-ghosting capacity</div>
+      </div>
 
-      <!-- Heatmap Legend & Summary -->
-      <div class="heatmap-footer">
-        <span>365-day rolling history</span>
-        <div class="legend-group">
-          <span>Less</span>
-          <div class="legend-cells">
-            <div class="legend-swatch" style="background: var(--heat-level-0);"></div>
-            <div class="legend-swatch" style="background: var(--heat-level-1);"></div>
-            <div class="legend-swatch" style="background: var(--heat-level-2);"></div>
-            <div class="legend-swatch" style="background: var(--heat-level-3);"></div>
-            <div class="legend-swatch" style="background: var(--heat-level-4);"></div>
+      <div class="metric-box">
+        <div class="metric-label">
+          <span>Tested Health Matrix</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        </div>
+        <div class="metric-number" id="metricTestedKeys">0/84</div>
+        <div class="metric-sub">Keys registered healthy</div>
+      </div>
+
+      <div class="metric-box">
+        <div class="metric-label">
+          <span>Keypress Response Time</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        </div>
+        <div class="metric-number" id="metricLatency">--</div>
+        <div class="metric-sub">Average travel latency</div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 1: KEYBOARD MATRIX TESTER -->
+    <!-- ===================================================================== -->
+    <main id="viewTester" class="keyboard-chassis-wrapper">
+      <div class="keyboard-controls-row">
+        <!-- Layout Selection -->
+        <div class="keyboard-layout-selector">
+          <button class="layout-opt-btn active" data-layout="ansi_75">75% Compact</button>
+          <button class="layout-opt-btn" data-layout="ansi_65">65% Slim</button>
+        </div>
+
+        <div class="keyboard-tools-right">
+          <button class="btn btn-sm" id="btnToggleHeatmap">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span>Heatmap Mode</span>
+          </button>
+
+          <button class="btn btn-sm" id="btnResetTester">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+            <span>Clear Matrix</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CNC Aluminum Keyboard Body -->
+      <div class="keyboard-case">
+        <div class="keyboard-plate" id="keyboardPlate"></div>
+      </div>
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 2: WPM TYPING CHALLENGE -->
+    <!-- ===================================================================== -->
+    <section id="viewTyping" class="typing-workspace" style="display: none;">
+      <div class="typing-header-row">
+        <div class="typing-stats-live">
+          <div class="live-stat-item">
+            <span class="live-stat-label">WPM</span>
+            <span class="live-stat-val accent" id="liveWpm">0</span>
           </div>
-          <span>More</span>
+          <div class="live-stat-item">
+            <span class="live-stat-label">Accuracy</span>
+            <span class="live-stat-val" id="liveAcc">100%</span>
+          </div>
+          <div class="live-stat-item">
+            <span class="live-stat-label">Time</span>
+            <span class="live-stat-val" id="liveTimer">30s</span>
+          </div>
+        </div>
+
+        <!-- Duration Selection -->
+        <div class="typing-duration-pills">
+          <button class="duration-pill" data-sec="15">15s</button>
+          <button class="duration-pill active" data-sec="30">30s</button>
+          <button class="duration-pill" data-sec="60">60s</button>
+        </div>
+      </div>
+
+      <!-- Word Display Box -->
+      <div class="typing-words-display" id="typingWordsBox"></div>
+
+      <div class="typing-footer-row">
+        <button class="btn" id="btnRestartTyping">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+          <span>Restart Test</span>
+        </button>
+        <div class="restart-hint">
+          <span>Press</span>
+          <span class="key-badge">Tab</span>
+          <span>to quickly restart</span>
         </div>
       </div>
     </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 3: FREE SOUNDBOARD TYPEWRITER CANVAS -->
+    <!-- ===================================================================== -->
+    <section id="viewSoundboard" class="free-soundboard-workspace" style="display: none;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+        <div>
+          <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">Typewriter Acoustic Sandbox</h2>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Freely type notes or code and experience satisfying switch acoustics with every keypress.</p>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">
+          <span id="soundboardWordCount">0</span> words · <span id="soundboardCharCount">0</span> chars
+        </div>
+      </div>
+
+      <textarea
+        class="soundboard-textarea"
+        id="soundboardTextarea"
+        placeholder="Start typing your thoughts, code, or prose here to hear the acoustic switch resonance..."
+      ></textarea>
+    </section>
   </div>
 
-  <!-- Interactive Heatmap Tooltip -->
-  <div class="heatmap-tooltip" id="heatmapTooltip"></div>
+  <!-- WPM Results Modal Dialog -->
+  <div class="modal-backdrop" id="typingResultModal">
+    <div style="background: var(--bg-surface); border: 1px solid var(--border-strong); border-radius: var(--radius-xl); padding: 2rem; max-width: 480px; width: 100%; box-shadow: var(--shadow-lg);">
+      <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 1.25rem; text-align: center;">Test Complete! ⚡</h3>
 
-  <!-- ======================================================================= -->
-  <!-- MODAL 1: Add New Habit -->
-  <!-- ======================================================================= -->
-  <div class="modal-backdrop" id="modalAddHabit">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3>Create New Habit</h3>
-        <button class="btn btn-icon btn-sm" data-close-modal title="Close">✕</button>
-      </div>
-
-      <form id="formAddHabit">
-        <div class="form-group">
-          <label class="form-label" for="inputHabitName">Habit Name</label>
-          <input
-            type="text"
-            id="inputHabitName"
-            class="form-input"
-            placeholder="e.g. Read 20 Pages, Drink 2L Water, 10k Steps..."
-            required
-            maxlength="40"
-            autocomplete="off"
-          >
+      <div class="typing-result-card">
+        <div style="text-align: center;">
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">WPM</div>
+          <div style="font-family: var(--font-mono); font-size: 1.75rem; font-weight: 800; color: var(--keycap-accent-bg);" id="resWpm">0</div>
         </div>
-
-        <div class="form-group">
-          <label class="form-label">Identify Color</label>
-          <div class="color-swatches-row">
-            <button type="button" class="color-swatch-btn selected" style="background: #4F7C53;" data-color="#4F7C53"></button>
-            <button type="button" class="color-swatch-btn" style="background: #C97A3E;" data-color="#C97A3E"></button>
-            <button type="button" class="color-swatch-btn" style="background: #B8533E;" data-color="#B8533E"></button>
-            <button type="button" class="color-swatch-btn" style="background: #4A5B78;" data-color="#4A5B78"></button>
-            <button type="button" class="color-swatch-btn" style="background: #7A4B6E;" data-color="#7A4B6E"></button>
-            <button type="button" class="color-swatch-btn" style="background: #3B7A8C;" data-color="#3B7A8C"></button>
-          </div>
+        <div style="text-align: center;">
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Accuracy</div>
+          <div style="font-family: var(--font-mono); font-size: 1.75rem; font-weight: 800; color: var(--text-main);" id="resAcc">0%</div>
         </div>
-
-        <div class="modal-actions">
-          <button type="button" class="btn" data-close-modal>Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Habit</button>
+        <div style="text-align: center;">
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">CPM</div>
+          <div style="font-family: var(--font-mono); font-size: 1.75rem; font-weight: 800; color: var(--text-main);" id="resCpm">0</div>
         </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ======================================================================= -->
-  <!-- MODAL 2: Manage Active Habits -->
-  <!-- ======================================================================= -->
-  <div class="modal-backdrop" id="modalManageHabits">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3>Manage Active Habits</h3>
-        <button class="btn btn-icon btn-sm" data-close-modal title="Close">✕</button>
+        <div style="text-align: center;">
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Chars</div>
+          <div style="font-family: var(--font-mono); font-size: 1.75rem; font-weight: 800; color: var(--text-main);" id="resChars">0</div>
+        </div>
       </div>
 
-      <div class="manage-habits-list" id="manageHabitsList"></div>
-
-      <div class="modal-actions">
-        <button type="button" class="btn btn-primary" data-close-modal>Done</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ======================================================================= -->
-  <!-- MODAL 3: Backup, Restore & Data Privacy -->
-  <!-- ======================================================================= -->
-  <div class="modal-backdrop" id="modalBackup">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3>Data Backup & Privacy</h3>
-        <button class="btn btn-icon btn-sm" data-close-modal title="Close">✕</button>
-      </div>
-
-      <div style="font-size:0.84rem; color:var(--text-muted); margin-bottom:1.25rem; line-height:1.6;">
-        All your habits and check-ins are stored 100% locally in your browser’s localStorage. Zero tracking, zero cloud servers.
-      </div>
-
-      <div style="display:flex; flex-direction:column; gap:0.75rem;">
-        <button class="btn" id="btnExportJSON" style="justify-content: flex-start;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          Export Backup JSON
-        </button>
-
-        <label class="btn" style="justify-content: flex-start; cursor: pointer;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-          Import Backup JSON
-          <input type="file" id="fileImportJSON" accept=".json" style="display: none;">
-        </label>
-
-        <button class="btn" id="btnResetDefaultData" style="justify-content: flex-start;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
-          Reset Sample Habits
-        </button>
-
-        <button class="btn" id="btnClearAllData" style="justify-content: flex-start; color: var(--accent-terracotta);">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-          Wipe All Data
-        </button>
-      </div>
-
-      <div class="modal-actions" style="margin-top:1.5rem;">
-        <button type="button" class="btn btn-primary" data-close-modal>Close</button>
+      <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 0.75rem;">
+        <button class="btn btn-primary" data-close-modal onclick="document.getElementById('btnRestartTyping').click()">Try Again</button>
+        <button class="btn" data-close-modal>Close</button>
       </div>
     </div>
   </div>
@@ -237,10 +267,10 @@
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- JavaScript Modules -->
-  <script src="js/store.js"></script>
-  <script src="js/stats.js"></script>
-  <script src="js/heatmap.js"></script>
+  <!-- JS Modules -->
+  <script src="js/synth.js"></script>
+  <script src="js/keyboard.js"></script>
+  <script src="js/typing.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

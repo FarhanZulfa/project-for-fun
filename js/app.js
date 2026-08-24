@@ -1,497 +1,261 @@
 /* ==========================================================================
-   HabitHeatmap - Main Application Orchestrator
-   Tactile Micro-Interactions, Audio Feedback, Modal System & State Management
+   KeyLab - Main Application Orchestrator
+   Mode Routing, Switch Profiles, Diagnostics Bindings & Event Dispatch
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  const store = window.HabitStore;
-  const statsEngine = new window.HabitStatsEngine(store);
+  // 1. Initialize Switch Synthesizer Engine
+  const synth = new window.SwitchSynthesizer();
 
-  // Application State
-  let currentDate = new Date();
-  let selectedHabitId = 'all';
-  let isMuted = localStorage.getItem('habit_heatmap_muted') === 'true';
+  // 2. Initialize Keyboard Tester Engine
+  const keyboard = new window.KeyboardTesterEngine('keyboardPlate', synth);
+
+  // 3. Initialize WPM Typing Challenge Engine
+  const typing = new window.TypingChallengeEngine('typingWordsBox', synth);
 
   // DOM Elements
-  const statsGrid = document.getElementById('statsGrid');
-  const habitsGrid = document.getElementById('habitsChecklistGrid');
-  const dateDisplayBtn = document.getElementById('dateDisplayBtn');
-  const btnPrevDay = document.getElementById('btnPrevDay');
-  const btnNextDay = document.getElementById('btnNextDay');
-  const btnToday = document.getElementById('btnToday');
-  const filterPillsContainer = document.getElementById('heatmapFilterPills');
+  const modeTabs = document.querySelectorAll('.mode-tab-btn');
+  const viewTester = document.getElementById('viewTester');
+  const viewTyping = document.getElementById('viewTyping');
+  const viewSoundboard = document.getElementById('viewSoundboard');
 
-  // Modals & Triggers
-  const btnNewHabit = document.getElementById('btnNewHabit');
-  const btnManageHabits = document.getElementById('btnManageHabits');
-  const btnBackupRestore = document.getElementById('btnBackupRestore');
+  let activeMode = 'tester'; // 'tester', 'typing', 'soundboard'
+
+  // Metric Displays
+  const metricActiveKeys = document.getElementById('metricActiveKeys');
+  const metricMaxNkro = document.getElementById('metricMaxNkro');
+  const metricTestedKeys = document.getElementById('metricTestedKeys');
+  const metricLatency = document.getElementById('metricLatency');
+
+  // Switch Profiles Bar
+  const switchCards = document.querySelectorAll('.switch-card');
+  const volumeSlider = document.getElementById('volumeSlider');
+  const btnToggleMute = document.getElementById('btnToggleMute');
+
+  // Mode Tabs Switching
+  modeTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      modeTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeMode = tab.dataset.mode;
+
+      if (viewTester) viewTester.style.display = activeMode === 'tester' ? 'flex' : 'none';
+      if (viewTyping) viewTyping.style.display = activeMode === 'typing' ? 'flex' : 'none';
+      if (viewSoundboard) viewSoundboard.style.display = activeMode === 'soundboard' ? 'flex' : 'none';
+
+      if (activeMode === 'typing') {
+        typing.reset();
+        focusTypingInput();
+      }
+    });
+  });
+
+  // Switch Profile Selection
+  switchCards.forEach(card => {
+    card.addEventListener('click', () => {
+      switchCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const profile = card.dataset.switch;
+      synth.setProfile(profile);
+
+      // Play test sound
+      synth.playDownstroke('KeyA');
+      setTimeout(() => synth.playUpstroke('KeyA'), 60);
+
+      showToast(`Acoustic Switch: ${card.querySelector('span:last-child').textContent}`);
+    });
+  });
+
+  // Volume & Audio Controls
+  if (volumeSlider) {
+    volumeSlider.addEventListener('input', (e) => {
+      const vol = parseFloat(e.target.value);
+      synth.setVolume(vol);
+    });
+  }
+
+  let isMuted = false;
+  if (btnToggleMute) {
+    btnToggleMute.addEventListener('click', () => {
+      isMuted = !isMuted;
+      synth.setMuted(isMuted);
+      btnToggleMute.style.opacity = isMuted ? '0.45' : '1';
+      showToast(isMuted ? 'Sound synthesizer muted' : 'Sound synthesizer active');
+    });
+  }
+
+  // Keyboard Layout Selector
+  const layoutBtns = document.querySelectorAll('.layout-opt-btn');
+  layoutBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      layoutBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const layout = btn.dataset.layout;
+      keyboard.setLayout(layout);
+      showToast(`Switched layout to ${btn.textContent}`);
+    });
+  });
+
+  // Heatmap & Reset Buttons
+  const btnToggleHeatmap = document.getElementById('btnToggleHeatmap');
+  let heatmapActive = false;
+  if (btnToggleHeatmap) {
+    btnToggleHeatmap.addEventListener('click', () => {
+      heatmapActive = !heatmapActive;
+      keyboard.toggleHeatmapMode(heatmapActive);
+      btnToggleHeatmap.classList.toggle('active', heatmapActive);
+      showToast(heatmapActive ? 'Heatmap frequency mode ON' : 'Heatmap mode OFF');
+    });
+  }
+
+  const btnResetTester = document.getElementById('btnResetTester');
+  if (btnResetTester) {
+    btnResetTester.addEventListener('click', () => {
+      keyboard.resetTester();
+      showToast('Tester memory cleared');
+    });
+  }
+
+  // Live Metrics Update from Keyboard Tester
+  keyboard.onMetricsChange = (metrics) => {
+    if (metricActiveKeys) metricActiveKeys.textContent = metrics.activeCount;
+    if (metricMaxNkro) metricMaxNkro.textContent = `${metrics.maxSimultaneous} keys`;
+    if (metricTestedKeys) metricTestedKeys.textContent = `${metrics.testedCount}/${metrics.totalKeys}`;
+    if (metricLatency) metricLatency.textContent = metrics.avgLatency > 0 ? `${metrics.avgLatency}ms` : '--';
+  };
+
+  // =========================================================================
+  // WPM Typing Mode Handlers
+  // =========================================================================
+  const liveWpm = document.getElementById('liveWpm');
+  const liveAcc = document.getElementById('liveAcc');
+  const liveTimer = document.getElementById('liveTimer');
+  const typingWordsBox = document.getElementById('typingWordsBox');
+  const durationPills = document.querySelectorAll('.duration-pill');
+  const btnRestartTyping = document.getElementById('btnRestartTyping');
+  const typingResultModal = document.getElementById('typingResultModal');
+
+  durationPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      durationPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const sec = parseInt(pill.dataset.sec, 10);
+      typing.setDuration(sec);
+      focusTypingInput();
+    });
+  });
+
+  if (btnRestartTyping) {
+    btnRestartTyping.addEventListener('click', () => {
+      typing.reset();
+      focusTypingInput();
+    });
+  }
+
+  // Live WPM ticking
+  typing.onTick = (metrics) => {
+    if (liveWpm) liveWpm.textContent = metrics.wpm;
+    if (liveAcc) liveAcc.textContent = `${metrics.accuracy}%`;
+    if (liveTimer) liveTimer.textContent = `${metrics.timeLeft}s`;
+  };
+
+  typing.onFinish = (metrics) => {
+    showTypingResult(metrics);
+  };
+
+  function showTypingResult(m) {
+    if (typingResultModal) {
+      document.getElementById('resWpm').textContent = m.wpm;
+      document.getElementById('resAcc').textContent = `${m.accuracy}%`;
+      document.getElementById('resCpm').textContent = m.cpm;
+      document.getElementById('resChars').textContent = `${m.correctChars}/${m.totalTyped}`;
+      typingResultModal.classList.add('active');
+    }
+  }
+
+  function focusTypingInput() {
+    if (typingWordsBox) {
+      typingWordsBox.focus();
+    }
+  }
+
+  if (typingWordsBox) {
+    typingWordsBox.tabIndex = 0;
+    typingWordsBox.addEventListener('keydown', (e) => {
+      if (activeMode !== 'typing') return;
+
+      // Restart shortcut: Tab + Enter
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        typing.reset();
+        return;
+      }
+
+      if (e.key === ' ' || e.key === 'Backspace' || e.key.length === 1) {
+        e.preventDefault();
+        synth.playDownstroke(e.code);
+        typing.handleKeyPress(e.key, e.code);
+      }
+    });
+
+    typingWordsBox.addEventListener('keyup', (e) => {
+      if (activeMode === 'typing') {
+        synth.playUpstroke(e.code);
+      }
+    });
+  }
+
+  // =========================================================================
+  // Free Soundboard Typewriter Canvas
+  // =========================================================================
+  const soundboardTextarea = document.getElementById('soundboardTextarea');
+  const soundboardCharCount = document.getElementById('soundboardCharCount');
+  const soundboardWordCount = document.getElementById('soundboardWordCount');
+
+  if (soundboardTextarea) {
+    soundboardTextarea.addEventListener('keydown', (e) => {
+      synth.playDownstroke(e.code);
+    });
+
+    soundboardTextarea.addEventListener('keyup', (e) => {
+      synth.playUpstroke(e.code);
+      const text = soundboardTextarea.value;
+      if (soundboardCharCount) soundboardCharCount.textContent = text.length;
+      if (soundboardWordCount) {
+        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+        soundboardWordCount.textContent = words;
+      }
+    });
+  }
+
+  // =========================================================================
+  // Theme Toggle (Dark Aluminum vs Light Studio)
+  // =========================================================================
   const btnToggleTheme = document.getElementById('btnToggleTheme');
-  const btnToggleSound = document.getElementById('btnToggleSound');
-
-  const modalAddHabit = document.getElementById('modalAddHabit');
-  const modalManage = document.getElementById('modalManageHabits');
-  const modalBackup = document.getElementById('modalBackup');
-
-  // Heatmap Initializer
-  const heatmap = new window.HeatmapRenderer(
-    'heatmapContainer',
-    'heatmapTooltip',
-    store,
-    (clickedDateStr) => {
-      const [y, m, d] = clickedDateStr.split('-').map(Number);
-      currentDate = new Date(y, m - 1, d);
-      updateDateDisplay();
-      renderChecklist();
-      showToast(`Selected date: ${formatDateReadable(currentDate)}`);
-    }
-  );
-
-  // =========================================================================
-  // Web Audio Tactile Sound Effects (Pure Synthetic, zero MP3 dependencies)
-  // =========================================================================
-  const audioCtx = window.AudioContext ? new (window.AudioContext || window.webkitAudioContext)() : null;
-
-  function playSoftChime(isCheck) {
-    if (isMuted || !audioCtx) return;
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
-
-    try {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-
-      osc.type = 'sine';
-      const now = audioCtx.currentTime;
-
-      if (isCheck) {
-        // High, cheerful wooden bell chime
-        osc.frequency.setValueAtTime(523.25, now); // C5
-        osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.08); // E5
-        gain.gain.setValueAtTime(0.12, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-      } else {
-        // Subtle soft tap
-        osc.frequency.setValueAtTime(320, now);
-        osc.frequency.exponentialRampToValueAtTime(240, now + 0.08);
-        gain.gain.setValueAtTime(0.08, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-      }
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + 0.25);
-    } catch (e) {
-      // Audio fallback silent
-    }
-  }
-
-  // =========================================================================
-  // Date Helpers
-  // =========================================================================
-  function formatDateKey(d) {
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  function formatDateReadable(d) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const target = new Date(d);
-    target.setHours(0, 0, 0, 0);
-
-    const diffDays = Math.round((target - today) / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 0) return 'Today, ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    if (diffDays === -1) return 'Yesterday, ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    if (diffDays === 1) return 'Tomorrow, ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-
-    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-  }
-
-  function updateDateDisplay() {
-    if (dateDisplayBtn) {
-      dateDisplayBtn.textContent = formatDateReadable(currentDate);
-    }
-  }
-
-  // =========================================================================
-  // Renderers
-  // =========================================================================
-  function renderStats() {
-    if (!statsGrid) return;
-    const summary = statsEngine.calculateSummary();
-
-    statsGrid.innerHTML = `
-      <div class="stat-card">
-        <div class="stat-header">
-          <span>Current Streak</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
-        </div>
-        <div class="stat-value">
-          ${summary.currentStreak}
-          <span class="stat-unit">days</span>
-        </div>
-        <div class="stat-subtext">Record: ${summary.longestStreak} days</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <span>Total Check-ins</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
-        </div>
-        <div class="stat-value">
-          ${summary.totalCheckIns}
-          <span class="stat-unit">ticks</span>
-        </div>
-        <div class="stat-subtext">Across all active habits</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <span>30-Day Completion</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        </div>
-        <div class="stat-value">
-          ${summary.completionRate30d}
-          <span class="stat-unit">%</span>
-        </div>
-        <div class="stat-subtext">Last 30 days consistency</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <span>Today's Progress</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-        </div>
-        <div class="stat-value">
-          ${summary.todayDone}/${summary.todayTotal}
-          <span class="stat-unit">done</span>
-        </div>
-        <div class="stat-subtext">${summary.todayTotal > 0 ? Math.round((summary.todayDone / summary.todayTotal) * 100) : 0}% completed today</div>
-      </div>
-    `;
-  }
-
-  function renderChecklist() {
-    if (!habitsGrid) return;
-    const habits = store.getHabits();
-    const dateKey = formatDateKey(currentDate);
-    const completedIds = store.getLogsForDate(dateKey);
-
-    if (habits.length === 0) {
-      habitsGrid.innerHTML = `
-        <div class="empty-habits-notice">
-          <p style="font-weight:600; font-size:0.95rem; margin-bottom:0.4rem;">No active habits yet</p>
-          <p style="font-size:0.82rem; margin-bottom:1rem;">Click "New Habit" above to start building your daily routine.</p>
-          <button class="btn btn-primary" onclick="document.getElementById('btnNewHabit').click()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Add First Habit
-          </button>
-        </div>
-      `;
-      return;
-    }
-
-    habitsGrid.innerHTML = habits.map(h => {
-      const isDone = completedIds.includes(h.id);
-      const streak = statsEngine.calculateHabitStreak(h.id);
-      const completedClass = isDone ? 'completed' : '';
-
-      return `
-        <div class="habit-card ${completedClass}" data-habit-id="${h.id}">
-          <div class="habit-card-left">
-            <span class="habit-color-indicator" style="background:${h.color}"></span>
-            <div class="habit-details">
-              <span class="habit-name">${escapeHtml(h.name)}</span>
-              <span class="habit-streak-pill">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
-                ${streak} day streak
-              </span>
-            </div>
-          </div>
-          <div class="check-trigger">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    // Attach click listeners to cards
-    habitsGrid.querySelectorAll('.habit-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const hid = card.dataset.habitId;
-        const willBeDone = !card.classList.contains('completed');
-        playSoftChime(willBeDone);
-        store.toggleHabitLog(dateKey, hid);
-      });
-    });
-  }
-
-  function renderFilterPills() {
-    if (!filterPillsContainer) return;
-    const habits = store.getHabits();
-
-    let html = `
-      <button class="filter-pill ${selectedHabitId === 'all' ? 'active' : ''}" data-filter="all">
-        All Habits (Master)
-      </button>
-    `;
-
-    habits.forEach(h => {
-      const active = selectedHabitId === h.id ? 'active' : '';
-      html += `
-        <button class="filter-pill ${active}" data-filter="${h.id}">
-          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${h.color}; margin-right:4px;"></span>
-          ${escapeHtml(h.name)}
-        </button>
-      `;
-    });
-
-    filterPillsContainer.innerHTML = html;
-
-    filterPillsContainer.querySelectorAll('.filter-pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        selectedHabitId = btn.dataset.filter;
-        renderFilterPills();
-        heatmap.setHabitFilter(selectedHabitId);
-      });
-    });
-  }
-
-  function renderManageHabitsList() {
-    const list = document.getElementById('manageHabitsList');
-    if (!list) return;
-    const habits = store.getHabits();
-
-    if (habits.length === 0) {
-      list.innerHTML = `<div style="text-align:center; padding:1.5rem; color:var(--text-muted); font-size:0.84rem;">No habits found.</div>`;
-      return;
-    }
-
-    list.innerHTML = habits.map(h => `
-      <div class="manage-habit-item">
-        <div class="manage-habit-info">
-          <span class="habit-color-indicator" style="background:${h.color}"></span>
-          <span style="font-weight:600; font-size:0.86rem;">${escapeHtml(h.name)}</span>
-        </div>
-        <button class="btn btn-sm" style="color:var(--accent-terracotta);" data-delete-id="${h.id}" title="Delete Habit">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-        </button>
-      </div>
-    `).join('');
-
-    list.querySelectorAll('[data-delete-id]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const hid = btn.dataset.deleteId;
-        const habit = store.getHabitById(hid);
-        if (confirm(`Delete habit "${habit ? habit.name : ''}"? This will remove its logs permanently.`)) {
-          store.deleteHabit(hid);
-          renderManageHabitsList();
-          showToast('Habit deleted');
-        }
-      });
-    });
-  }
-
-  // =========================================================================
-  // Date Navigation Events
-  // =========================================================================
-  if (btnPrevDay) {
-    btnPrevDay.addEventListener('click', () => {
-      currentDate.setDate(currentDate.getDate() - 1);
-      updateDateDisplay();
-      renderChecklist();
-    });
-  }
-
-  if (btnNextDay) {
-    btnNextDay.addEventListener('click', () => {
-      currentDate.setDate(currentDate.getDate() + 1);
-      updateDateDisplay();
-      renderChecklist();
-    });
-  }
-
-  if (btnToday) {
-    btnToday.addEventListener('click', () => {
-      currentDate = new Date();
-      updateDateDisplay();
-      renderChecklist();
-    });
-  }
-
-  // =========================================================================
-  // Modal Handlers
-  // =========================================================================
-  function openModal(m) {
-    if (m) m.classList.add('active');
-  }
-
-  function closeModal(m) {
-    if (m) m.classList.remove('active');
-  }
-
-  // Close when clicking outside modal card or close buttons
-  document.querySelectorAll('.modal-backdrop').forEach(modal => {
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal(modal);
-    });
-  });
-
-  document.querySelectorAll('[data-close-modal]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const modal = btn.closest('.modal-backdrop');
-      closeModal(modal);
-    });
-  });
-
-  if (btnNewHabit) {
-    btnNewHabit.addEventListener('click', () => {
-      document.getElementById('inputHabitName').value = '';
-      openModal(modalAddHabit);
-    });
-  }
-
-  if (btnManageHabits) {
-    btnManageHabits.addEventListener('click', () => {
-      renderManageHabitsList();
-      openModal(modalManage);
-    });
-  }
-
-  if (btnBackupRestore) {
-    btnBackupRestore.addEventListener('click', () => {
-      openModal(modalBackup);
-    });
-  }
-
-  // Color Swatches in Add Habit Modal
-  let selectedColor = '#4F7C53';
-  document.querySelectorAll('.color-swatch-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      selectedColor = btn.dataset.color;
-    });
-  });
-
-  // Submit Add Habit
-  const formAddHabit = document.getElementById('formAddHabit');
-  if (formAddHabit) {
-    formAddHabit.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = document.getElementById('inputHabitName').value.trim();
-      if (!name) return;
-
-      store.addHabit(name, selectedColor);
-      closeModal(modalAddHabit);
-      showToast(`Added habit: ${name}`);
-    });
-  }
-
-  // Backup & Restore Actions
-  const btnExportJSON = document.getElementById('btnExportJSON');
-  if (btnExportJSON) {
-    btnExportJSON.addEventListener('click', () => {
-      store.exportBackup();
-      showToast('Backup JSON downloaded');
-    });
-  }
-
-  const fileImportJSON = document.getElementById('fileImportJSON');
-  if (fileImportJSON) {
-    fileImportJSON.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = store.importBackup(event.target.result);
-        if (result.success) {
-          closeModal(modalBackup);
-          showToast(`Successfully restored ${result.count} habits!`);
-        } else {
-          alert('Import failed: ' + result.error);
-        }
-      };
-      reader.readAsText(file);
-    });
-  }
-
-  const btnResetDefaultData = document.getElementById('btnResetDefaultData');
-  if (btnResetDefaultData) {
-    btnResetDefaultData.addEventListener('click', () => {
-      if (confirm('Reset to standard starter habits and sample heatmap data?')) {
-        store.resetToDefault();
-        closeModal(modalBackup);
-        showToast('Reset to default habits');
-      }
-    });
-  }
-
-  const btnClearAllData = document.getElementById('btnClearAllData');
-  if (btnClearAllData) {
-    btnClearAllData.addEventListener('click', () => {
-      if (confirm('Wipe ALL habits and logs permanently? This cannot be undone.')) {
-        store.clearAll();
-        closeModal(modalBackup);
-        showToast('All habit data cleared');
-      }
-    });
-  }
-
-  // =========================================================================
-  // Theme & Audio Controls
-  // =========================================================================
   function applyTheme(theme) {
-    if (theme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      if (btnToggleTheme) btnToggleTheme.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      if (btnToggleTheme) btnToggleTheme.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
     } else {
       document.documentElement.removeAttribute('data-theme');
-      if (btnToggleTheme) btnToggleTheme.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+      if (btnToggleTheme) btnToggleTheme.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
     }
   }
 
-  const savedTheme = localStorage.getItem('habit_heatmap_theme') || 'light';
+  const savedTheme = localStorage.getItem('keylab_theme') || 'dark';
   applyTheme(savedTheme);
 
   if (btnToggleTheme) {
     btnToggleTheme.addEventListener('click', () => {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      const newTheme = isDark ? 'light' : 'dark';
-      localStorage.setItem('habit_heatmap_theme', newTheme);
-      applyTheme(newTheme);
-      heatmap.render();
-      showToast(`Switched to ${newTheme} mode`);
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const nextTheme = isLight ? 'dark' : 'light';
+      localStorage.setItem('keylab_theme', nextTheme);
+      applyTheme(nextTheme);
+      showToast(`Switched to ${nextTheme} studio theme`);
     });
   }
 
-  if (btnToggleSound) {
-    const updateSoundBtn = () => {
-      btnToggleSound.style.opacity = isMuted ? '0.5' : '1';
-      btnToggleSound.title = isMuted ? 'Audio Feedback Muted' : 'Audio Feedback Enabled';
-    };
-    updateSoundBtn();
-
-    btnToggleSound.addEventListener('click', () => {
-      isMuted = !isMuted;
-      localStorage.setItem('habit_heatmap_muted', isMuted);
-      updateSoundBtn();
-      showToast(isMuted ? 'Sound effects muted' : 'Sound effects enabled');
-    });
-  }
-
-  // =========================================================================
-  // Toast Utility
-  // =========================================================================
+  // Toast System
   const toastContainer = document.getElementById('toastContainer');
   function showToast(msg) {
     if (!toastContainer) return;
@@ -504,28 +268,24 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       toast.classList.remove('show');
       setTimeout(() => toast.remove(), 400);
-    }, 2400);
+    }, 2200);
   }
   window.showToast = showToast;
 
-  function escapeHtml(str) {
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-
-  // =========================================================================
-  // Store Subscriptions & Initial Paint
-  // =========================================================================
-  store.subscribe(() => {
-    renderStats();
-    renderChecklist();
-    renderFilterPills();
-    heatmap.render();
+  // Modal Backdrop Closer
+  document.querySelectorAll('.modal-backdrop').forEach(m => {
+    m.addEventListener('click', (e) => {
+      if (e.target === m) m.classList.remove('active');
+    });
   });
 
-  // Initial Paint
-  updateDateDisplay();
-  renderStats();
-  renderChecklist();
-  renderFilterPills();
-  heatmap.render();
+  document.querySelectorAll('[data-close-modal]').forEach(b => {
+    b.addEventListener('click', () => {
+      const m = b.closest('.modal-backdrop');
+      if (m) m.classList.remove('active');
+    });
+  });
+
+  // Initial feedback
+  showToast('KeyLab Studio initialized · Ready to test');
 });

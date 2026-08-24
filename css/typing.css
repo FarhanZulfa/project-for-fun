@@ -1,0 +1,230 @@
+/* ==========================================================================
+   KeyLab - WPM Speed Challenge & Free Soundboard Typewriter
+   Minimalist Typography, Caret Pulse & Result Analytics
+   ========================================================================== */
+
+/* WPM Challenge Container */
+.typing-workspace {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 2rem 2.25rem;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.typing-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.typing-stats-live {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.live-stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.live-stat-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.live-stat-val {
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.live-stat-val.accent {
+  color: var(--keycap-accent-bg);
+}
+
+/* Duration Options */
+.typing-duration-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-pill);
+  padding: 0.2rem;
+}
+
+.duration-pill {
+  padding: 0.3rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  transition: all var(--trans-fast);
+}
+
+.duration-pill:hover {
+  color: var(--text-main);
+}
+
+.duration-pill.active {
+  background: var(--bg-subtle);
+  color: var(--text-main);
+}
+
+/* Interactive Text Box */
+.typing-words-display {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 1.35rem;
+  line-height: 2;
+  color: var(--text-dim);
+  height: 135px;
+  overflow: hidden;
+  user-select: none;
+  cursor: text;
+  outline: none;
+  border-radius: var(--radius-md);
+}
+
+.typing-words-display:focus {
+  outline: none;
+}
+
+.word {
+  display: inline-block;
+  margin-right: 0.65em;
+  margin-bottom: 0.2em;
+}
+
+.char {
+  position: relative;
+  transition: color 50ms ease;
+}
+
+.char.correct {
+  color: var(--text-main);
+}
+
+.char.incorrect {
+  color: var(--status-error);
+  text-decoration: underline;
+}
+
+/* Caret Cursor */
+.caret {
+  position: absolute;
+  width: 2.5px;
+  height: 1.4em;
+  background-color: var(--keycap-accent-bg);
+  border-radius: 1px;
+  top: 0;
+  left: 0;
+  transition: left 80ms ease, top 80ms ease;
+  pointer-events: none;
+  animation: caretBlink 1s ease infinite;
+}
+
+@keyframes caretBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Hidden Input for Mobile/Keyboard capture */
+.hidden-typing-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  left: -9999px;
+}
+
+/* Typing Controls Footer */
+.typing-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.restart-hint {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.key-badge {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Free Typewriter Soundboard Canvas */
+.free-soundboard-workspace {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 2rem 2.25rem;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.soundboard-textarea {
+  width: 100%;
+  min-height: 220px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text-main);
+  outline: none;
+  resize: vertical;
+  transition: all var(--trans-fast);
+}
+
+.soundboard-textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(194, 91, 62, 0.12);
+}
+
+/* Results Dialog */
+.typing-result-card {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  animation: fadeIn 250ms ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}

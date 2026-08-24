@@ -1,0 +1,238 @@
+/* ==========================================================================
+   KeyLab - Keyboard Chassis & 3D Keycap Mechanical Physics
+   Realistic Key Travel Depression, Double-Layer Bevels & Heatmap Glow
+   ========================================================================== */
+
+/* Keyboard Chassis Frame */
+.keyboard-chassis-wrapper {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  overflow-x: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  scrollbar-width: thin;
+}
+
+.keyboard-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.keyboard-layout-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-pill);
+  padding: 0.2rem;
+}
+
+.layout-opt-btn {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  transition: all var(--trans-fast);
+}
+
+.layout-opt-btn:hover {
+  color: var(--text-main);
+}
+
+.layout-opt-btn.active {
+  background: var(--bg-subtle);
+  color: var(--text-main);
+}
+
+.keyboard-tools-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* CNC Aluminum Keyboard Body */
+.keyboard-case {
+  background: linear-gradient(180deg, #24201B 0%, #1A1714 100%);
+  border: 2px solid #332C25;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+  display: inline-block;
+  margin: 0 auto;
+  position: relative;
+  user-select: none;
+  min-width: 960px;
+}
+
+[data-theme="light"] .keyboard-case {
+  background: linear-gradient(180deg, #E6E0D4 0%, #D4CCC0 100%);
+  border-color: #C2BAAC;
+  box-shadow:
+    0 12px 32px rgba(36, 31, 26, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Brass Switch Plate Internal Cutout */
+.keyboard-plate {
+  background: #151310;
+  border: 1px solid #2B251E;
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="light"] .keyboard-plate {
+  background: #C4BCAD;
+  border-color: #B2A999;
+}
+
+/* Keyboard Row */
+.kb-row {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+/* 3D Keycap Physics & Aesthetics */
+.keycap {
+  position: relative;
+  height: 48px;
+  min-width: 48px;
+  background: var(--keycap-alpha-bg);
+  color: var(--keycap-alpha-text);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  cursor: pointer;
+  outline: none;
+  transition:
+    transform 50ms cubic-bezier(0, 0, 0.2, 1),
+    box-shadow 50ms cubic-bezier(0, 0, 0.2, 1),
+    background-color 150ms ease;
+
+  /* 3D Bevel & Bottom Shadow */
+  box-shadow:
+    0 4px 0 var(--keycap-alpha-shadow),
+    0 5px 6px rgba(0, 0, 0, 0.35);
+}
+
+.keycap-legend {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.keycap-sub {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  opacity: 0.7;
+  line-height: 1;
+}
+
+/* Keycap Sizes (Units) */
+.k-1 { width: 48px; }
+.k-125 { width: 62px; }
+.k-15 { width: 75px; }
+.k-175 { width: 88px; }
+.k-2 { width: 101px; }
+.k-225 { width: 114px; }
+.k-275 { width: 140px; }
+.k-625 { width: 318px; } /* Spacebar */
+.k-7 { width: 356px; }
+
+/* Modifier Keycaps */
+.keycap.mod {
+  background: var(--keycap-mod-bg);
+  color: var(--keycap-mod-text);
+  box-shadow:
+    0 4px 0 var(--keycap-mod-shadow),
+    0 5px 6px rgba(0, 0, 0, 0.35);
+}
+
+.keycap.mod .keycap-legend {
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* Accent Keycaps (Esc, Enter, Space options) */
+.keycap.accent-esc,
+.keycap.accent-enter {
+  background: var(--keycap-accent-bg);
+  color: var(--keycap-accent-text);
+  box-shadow:
+    0 4px 0 var(--keycap-accent-shadow),
+    0 5px 6px rgba(0, 0, 0, 0.35);
+}
+
+.keycap.accent-alt {
+  background: var(--keycap-accent-alt-bg);
+  color: var(--keycap-accent-alt-text);
+  box-shadow:
+    0 4px 0 var(--keycap-accent-alt-shadow),
+    0 5px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* PRESSED STATE: 3D Depression physics */
+.keycap.pressed,
+.keycap:active {
+  transform: translateY(3.5px);
+  box-shadow:
+    0 0.5px 0 var(--keycap-alpha-shadow),
+    0 1px 2px rgba(0, 0, 0, 0.25) !important;
+  background-color: #F79342 !important;
+  color: #FFFFFF !important;
+}
+
+.keycap.mod.pressed {
+  box-shadow:
+    0 0.5px 0 var(--keycap-mod-shadow),
+    0 1px 2px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* TESTED STATE: Keycap has been registered healthy */
+.keycap.tested {
+  border: 1px solid rgba(79, 138, 85, 0.6);
+  position: relative;
+}
+
+.keycap.tested::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #4F8A55;
+}
+
+/* HEATMAP GLOW MODE */
+.keycap[data-heat-level="1"] { background-color: #B5D8A4 !important; color: #1E5C22 !important; }
+.keycap[data-heat-level="2"] { background-color: #72B868 !important; color: #FFFFFF !important; }
+.keycap[data-heat-level="3"] { background-color: #3B8C3A !important; color: #FFFFFF !important; }
+.keycap[data-heat-level="4"] { background-color: #1E5C22 !important; color: #FFFFFF !important; }
+
+/* Spacer */
+.k-space-half { width: 12px; }
+.k-space-1 { width: 24px; }
