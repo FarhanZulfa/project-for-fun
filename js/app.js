@@ -1,16 +1,19 @@
 /* ==========================================================================
    KeyLab - Main Application Orchestrator
-   Mode Routing, Switch Profiles, Diagnostics Bindings & Event Dispatch
+   Real 3D Three.js Model, Anime.js Springs & Sound Synthesis Integration
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize Switch Synthesizer Engine
   const synth = new window.SwitchSynthesizer();
 
-  // 2. Initialize Keyboard Tester Engine
-  const keyboard = new window.KeyboardTesterEngine('keyboardPlate', synth);
+  // 2. Initialize Real 3D Mechanical Keyboard Engine (Three.js + Anime.js)
+  const keyboard3d = new window.Keyboard3DEngine('keyboard3dCanvas', synth);
 
-  // 3. Initialize WPM Typing Challenge Engine
+  // 3. Initialize 2D Keyboard Tester Engine (Matrix fallback & tracking)
+  const keyboard2d = new window.KeyboardTesterEngine('keyboardPlate', synth);
+
+  // 4. Initialize WPM Typing Challenge Engine
   const typing = new window.TypingChallengeEngine('typingWordsBox', synth);
 
   // DOM Elements
@@ -47,16 +50,30 @@ document.addEventListener('DOMContentLoaded', () => {
         typing.reset();
         focusTypingInput();
       }
+
+      if (activeMode === 'tester') {
+        keyboard3d.handleResize();
+      }
     });
   });
 
-  // Switch Profile Selection
+  // Switch Profile Selection with Anime.js bounce
   switchCards.forEach(card => {
     card.addEventListener('click', () => {
       switchCards.forEach(c => c.classList.remove('active'));
       card.classList.add('active');
       const profile = card.dataset.switch;
       synth.setProfile(profile);
+
+      // Anime.js card micro-bounce
+      if (typeof anime !== 'undefined') {
+        anime({
+          targets: card,
+          scale: [0.94, 1],
+          duration: 200,
+          easing: 'easeOutBack'
+        });
+      }
 
       // Play test sound
       synth.playDownstroke('KeyA');
@@ -84,14 +101,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Keyboard Layout Selector
+  // View Switcher (3D Model vs 2D Flat Matrix)
+  const btnView3D = document.getElementById('btnView3D');
+  const btnView2D = document.getElementById('btnView2D');
+  const viewport3D = document.getElementById('viewport3D');
+  const container2D = document.getElementById('container2D');
+  const layoutSelector2D = document.getElementById('layoutSelector2D');
+
+  if (btnView3D && btnView2D) {
+    btnView3D.addEventListener('click', () => {
+      btnView3D.classList.add('active');
+      btnView2D.classList.remove('active');
+      if (viewport3D) viewport3D.style.display = 'flex';
+      if (container2D) container2D.style.display = 'none';
+      if (layoutSelector2D) layoutSelector2D.style.display = 'none';
+      keyboard3d.handleResize();
+      showToast('Switched to Real 3D Studio Model');
+    });
+
+    btnView2D.addEventListener('click', () => {
+      btnView2D.classList.add('active');
+      btnView3D.classList.remove('active');
+      if (viewport3D) viewport3D.style.display = 'none';
+      if (container2D) container2D.style.display = 'inline-block';
+      if (layoutSelector2D) layoutSelector2D.style.display = 'flex';
+      showToast('Switched to 2D Matrix View');
+    });
+  }
+
+  // 3D Camera Reset Button
+  const btnResetCamera3D = document.getElementById('btnResetCamera3D');
+  if (btnResetCamera3D) {
+    btnResetCamera3D.addEventListener('click', () => {
+      keyboard3d.resetCameraAngle();
+      showToast('3D Camera angle reset');
+    });
+  }
+
+  // 2D Keyboard Layout Selector
   const layoutBtns = document.querySelectorAll('.layout-opt-btn');
   layoutBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       layoutBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const layout = btn.dataset.layout;
-      keyboard.setLayout(layout);
+      keyboard2d.setLayout(layout);
       showToast(`Switched layout to ${btn.textContent}`);
     });
   });
@@ -102,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnToggleHeatmap) {
     btnToggleHeatmap.addEventListener('click', () => {
       heatmapActive = !heatmapActive;
-      keyboard.toggleHeatmapMode(heatmapActive);
+      keyboard2d.toggleHeatmapMode(heatmapActive);
       btnToggleHeatmap.classList.toggle('active', heatmapActive);
       showToast(heatmapActive ? 'Heatmap frequency mode ON' : 'Heatmap mode OFF');
     });
@@ -111,13 +165,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnResetTester = document.getElementById('btnResetTester');
   if (btnResetTester) {
     btnResetTester.addEventListener('click', () => {
-      keyboard.resetTester();
+      keyboard2d.resetTester();
       showToast('Tester memory cleared');
     });
   }
 
-  // Live Metrics Update from Keyboard Tester
-  keyboard.onMetricsChange = (metrics) => {
+  // Sync Global Keyboard Events with 3D Model
+  window.addEventListener('keydown', (e) => {
+    keyboard3d.pressKey3D(e.code);
+  });
+
+  window.addEventListener('keyup', (e) => {
+    keyboard3d.releaseKey3D(e.code);
+  });
+
+  // Live Metrics Update from Keyboard Tester with Anime.js
+  keyboard2d.onMetricsChange = (metrics) => {
     if (metricActiveKeys) metricActiveKeys.textContent = metrics.activeCount;
     if (metricMaxNkro) metricMaxNkro.textContent = `${metrics.maxSimultaneous} keys`;
     if (metricTestedKeys) metricTestedKeys.textContent = `${metrics.testedCount}/${metrics.totalKeys}`;
@@ -170,6 +233,17 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('resCpm').textContent = m.cpm;
       document.getElementById('resChars').textContent = `${m.correctChars}/${m.totalTyped}`;
       typingResultModal.classList.add('active');
+
+      // Anime.js number counter popup
+      if (typeof anime !== 'undefined') {
+        anime({
+          targets: '#resWpm',
+          innerHTML: [0, m.wpm],
+          round: 1,
+          duration: 900,
+          easing: 'easeOutExpo'
+        });
+      }
     }
   }
 
@@ -236,9 +310,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (theme === 'light') {
       document.documentElement.setAttribute('data-theme', 'light');
       if (btnToggleTheme) btnToggleTheme.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+      if (keyboard3d.materials.case) {
+        keyboard3d.materials.case.color.setHex(0xE6E0D4);
+      }
     } else {
       document.documentElement.removeAttribute('data-theme');
       if (btnToggleTheme) btnToggleTheme.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+      if (keyboard3d.materials.case) {
+        keyboard3d.materials.case.color.setHex(0x1E1B18);
+      }
     }
   }
 
@@ -255,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Toast System
+  // Toast System with Anime.js
   const toastContainer = document.getElementById('toastContainer');
   function showToast(msg) {
     if (!toastContainer) return;
@@ -287,5 +367,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Initial feedback
-  showToast('KeyLab Studio initialized · Ready to test');
+  showToast('KeyLab 3D Studio Ready · Click & drag to rotate keyboard');
 });

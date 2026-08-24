@@ -3,12 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KeyLab — Mechanical Keyboard Tester & Switch Sound Synthesizer</title>
-  <meta name="description" content="Interactive mechanical keyboard tester, 100% synthetic switch sound simulator (thock/clack), NKRO anti-ghosting matrix, and WPM speed challenge.">
+  <title>KeyLab — Real 3D Mechanical Keyboard Tester & Switch Sound Synthesizer</title>
+  <meta name="description" content="Interactive 3D WebGL mechanical keyboard model, 100% synthetic switch sound simulator (thock/clack), NKRO anti-ghosting matrix, and WPM speed challenge.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23C25B3E'><rect x='2' y='4' width='20' height='16' rx='3'/><circle cx='6' cy='9' r='1.5' fill='%23FFF'/><circle cx='10' cy='9' r='1.5' fill='%23FFF'/><circle cx='14' cy='9' r='1.5' fill='%23FFF'/><circle cx='18' cy='9' r='1.5' fill='%23FFF'/><circle cx='6' cy='14' r='1.5' fill='%23FFF'/><circle cx='18' cy='14' r='1.5' fill='%23FFF'/><rect x='9' y='13' width='6' height='2' rx='1' fill='%23FFF'/></svg>">
+  
+  <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/keyboard.css">
   <link rel="stylesheet" href="css/typing.css">
+
+  <!-- 3D & Animation Libraries (Three.js + OrbitControls + Anime.js) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 </head>
 <body>
   <div class="app-container">
@@ -28,8 +35,8 @@
           </svg>
         </div>
         <div class="brand-text">
-          <h1>KeyLab</h1>
-          <p>Mechanical Keyboard Tester & Sound Synthesizer</p>
+          <h1>KeyLab 3D</h1>
+          <p>Real-Time Mechanical Keyboard Studio & Sound Synthesizer</p>
         </div>
       </div>
 
@@ -138,31 +145,57 @@
     </section>
 
     <!-- ===================================================================== -->
-    <!-- VIEW 1: KEYBOARD MATRIX TESTER -->
+    <!-- VIEW 1: KEYBOARD TESTER & 3D STUDIO -->
     <!-- ===================================================================== -->
     <main id="viewTester" class="keyboard-chassis-wrapper">
       <div class="keyboard-controls-row">
+        <!-- Viewport Switcher: 3D Model vs 2D Matrix -->
+        <div class="view-mode-toggle">
+          <button class="view-toggle-btn active" id="btnView3D" data-view="3d">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            <span>3D Studio Model</span>
+          </button>
+          <button class="view-toggle-btn" id="btnView2D" data-view="2d">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="6" y1="9" x2="6.01" y2="9"></line><line x1="10" y1="9" x2="10.01" y2="9"></line></svg>
+            <span>2D Flat Matrix</span>
+          </button>
+        </div>
+
         <!-- Layout Selection -->
-        <div class="keyboard-layout-selector">
+        <div class="keyboard-layout-selector" id="layoutSelector2D" style="display: none;">
           <button class="layout-opt-btn active" data-layout="ansi_75">75% Compact</button>
           <button class="layout-opt-btn" data-layout="ansi_65">65% Slim</button>
         </div>
 
         <div class="keyboard-tools-right">
+          <button class="btn btn-sm" id="btnResetCamera3D" title="Reset Camera Position">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"></path><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+            <span>Reset 3D Angle</span>
+          </button>
+
           <button class="btn btn-sm" id="btnToggleHeatmap">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
             <span>Heatmap Mode</span>
           </button>
 
           <button class="btn btn-sm" id="btnResetTester">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
             <span>Clear Matrix</span>
           </button>
         </div>
       </div>
 
-      <!-- CNC Aluminum Keyboard Body -->
-      <div class="keyboard-case">
+      <!-- Real 3D WebGL Viewport -->
+      <div class="viewport-3d-container" id="viewport3D">
+        <div id="keyboard3dCanvas" style="width: 100%; height: 100%;"></div>
+        <div class="viewport-3d-hint">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+          <span>Click & Drag to Rotate · Scroll to Zoom · Type to test 3D physics</span>
+        </div>
+      </div>
+
+      <!-- CNC Aluminum Keyboard Body (2D View - Optional Toggle) -->
+      <div class="keyboard-case" id="container2D" style="display: none;">
         <div class="keyboard-plate" id="keyboardPlate"></div>
       </div>
     </main>
@@ -269,6 +302,7 @@
 
   <!-- JS Modules -->
   <script src="js/synth.js"></script>
+  <script src="js/keyboard3d.js"></script>
   <script src="js/keyboard.js"></script>
   <script src="js/typing.js"></script>
   <script src="js/app.js"></script>
