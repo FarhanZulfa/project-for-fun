@@ -1,0 +1,245 @@
+@import "tailwindcss";
+
+/* ===== DESIGN SYSTEM KOSKU ===== */
+/* Palet warna: rumah yang hangat & terpercaya */
+/* Bukan SaaS korporat dingin, bukan cream+terracotta AI generik */
+
+:root {
+  /* Base */
+  --background: #FBF9F5;
+  --foreground: #2A2622;
+
+  /* Brand */
+  --brand: #7A5A3D;
+  --brand-light: #9B7B5E;
+  --brand-dark: #5C3F28;
+  --brand-muted: #7A5A3D1a;
+
+  /* Status kamar */
+  --status-kosong: #4F7A5C;
+  --status-kosong-bg: #4F7A5C1a;
+  --status-terisi: #B5533C;
+  --status-terisi-bg: #B5533C1a;
+  --status-maintenance: #C99A3E;
+  --status-maintenance-bg: #C99A3E1a;
+
+  /* Neutral */
+  --muted: #E8E4DE;
+  --muted-foreground: #7A746C;
+  --border: #D8D2C8;
+  --card: #FFFFFF;
+  --card-foreground: #2A2622;
+
+  /* Semantic */
+  --destructive: #B5533C;
+  --success: #4F7A5C;
+  --warning: #C99A3E;
+
+  /* Radius */
+  --radius: 0.625rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand: var(--brand);
+  --color-brand-light: var(--brand-light);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-muted: var(--brand-muted);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-status-kosong: var(--status-kosong);
+  --color-status-kosong-bg: var(--status-kosong-bg);
+  --color-status-terisi: var(--status-terisi);
+  --color-status-terisi-bg: var(--status-terisi-bg);
+  --color-status-maintenance: var(--status-maintenance);
+  --color-status-maintenance-bg: var(--status-maintenance-bg);
+  --font-heading: var(--font-fraunces);
+  --font-body: var(--font-public-sans);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body, 'Public Sans', system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings pakai Fraunces */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading, 'Fraunces', Georgia, serif);
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+
+/* ===== IMPECCABLE CRAFT FLOOR: BROWSER SURFACES ===== */
+/* Theme browser defaults: selection, caret, tabular numerals */
+::selection {
+  background-color: #7A5A3D2a;
+  color: #2A2622;
+}
+
+input, textarea, select {
+  caret-color: var(--brand);
+}
+
+/* Numerals in tabular financial data stay aligned */
+.tabular-nums,
+table td,
+.font-heading {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+/* Status badge kamar */
+.badge-kosong {
+  background-color: var(--status-kosong-bg);
+  color: var(--status-kosong);
+  font-weight: 600;
+}
+
+.badge-terisi {
+  background-color: var(--status-terisi-bg);
+  color: var(--status-terisi);
+  font-weight: 600;
+}
+
+.badge-maintenance {
+  background-color: var(--status-maintenance-bg);
+  color: var(--status-maintenance);
+  font-weight: 600;
+}
+
+/* Card kamar — craftsmanship: subtle border accent without generic 4px side stripe */
+.room-card {
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  background-color: var(--card);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.room-card:hover {
+  border-color: var(--brand-light);
+}
+
+.room-card:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Tombol brand utama */
+.btn-brand {
+  background-color: var(--brand);
+  color: #FFFFFF;
+  border-radius: var(--radius);
+  font-weight: 600;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  touch-action: manipulation;
+}
+
+.btn-brand:hover {
+  background-color: var(--brand-dark);
+}
+
+.btn-brand:active {
+  transform: scale(0.98);
+}
+
+/* Konfirmasi animasi (centang lunas) */
+@keyframes check-pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-check {
+  animation: check-pop 0.3s ease-out;
+}
+
+/* Mobile-first: navigasi bawah */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Focus visible yang jelas untuk aksesibilitas */
+*:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Scrollbar halus */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted) transparent;
+}
+
+/* Motion sensitivity: intentional fallback that preserves state feedback without jarring motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01s !important;
+  }
+}
+
+/* ===== STYLESHEET CETAK (PRINT & PDF) ===== */
+@media print {
+  /* Sembunyikan elemen navigasi dan tombol saat mencetak */
+  aside,
+  nav,
+  .bottom-nav,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Tampilkan kontainer modal tanpa fixed positioning */
+  .fixed.inset-0 {
+    position: static !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .fixed.inset-0.bg-black\/40 {
+    display: none !important;
+  }
+
+  /* Format cetak kuitansi dan laporan keuangan */
+  #kuitansi-print-area,
+  #laporan-print-sheet {
+    border: 1px solid #d1d5db !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 1.5rem !important;
+    margin: 0 auto !important;
+    background: #ffffff !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

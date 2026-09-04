@@ -1,0 +1,6 @@
+# Third-party cloned repositories
+ECC/
+impeccable/
+
+# Agent workflows and scratch
+.agents/
